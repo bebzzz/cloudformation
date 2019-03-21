@@ -1,0 +1,80 @@
+Parameters:
+  InstanceNameParameter:
+    Type: String
+    Description: DBInstanceIdentifier like MyTestRDS
+
+Resources:
+  CWAKW8C:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+        ActionsEnabled: True
+        AlarmActions:
+        - "arn:aws:sns:us-east-1:574368645764:RDS-Server-Alerts"
+        AlarmDescription: Alarm for high CPU utilization
+        AlarmName: !Join
+          - ''
+          - - "RDS-CPU-"
+            - !Ref InstanceNameParameter
+        ComparisonOperator:  GreaterThanOrEqualToThreshold
+        DatapointsToAlarm: 3
+        Dimensions:
+        - Name: "DBInstanceIdentifier"
+          Value: !Ref InstanceNameParameter
+        EvaluationPeriods: 3
+        MetricName: CPUUtilization
+        Namespace: AWS/RDS
+        Period: 300
+        Statistic: Average
+        Threshold: 95
+        TreatMissingData: missing
+        Unit: Percent
+
+  CWAKW8D:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+        ActionsEnabled: True
+        AlarmActions:
+        - "arn:aws:sns:us-east-1:574368645764:RDS-Server-Alerts"
+        AlarmDescription: Alarm for low FreeStorageSpace
+        AlarmName: !Join
+          - ''
+          - - "RDS-FreeStorageSpace-"
+            - !Ref InstanceNameParameter
+        ComparisonOperator:  LessThanOrEqualToThreshold
+        DatapointsToAlarm: 1
+        Dimensions:
+        - Name: "DBInstanceIdentifier"
+          Value: !Ref InstanceNameParameter
+        EvaluationPeriods: 1
+        MetricName: FreeStorageSpace
+        Namespace: AWS/RDS
+        Period: 300
+        Statistic: Average
+        Threshold: 10000000000
+        TreatMissingData: missing
+        Unit:  Bytes
+
+  CWAKW8E:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+        ActionsEnabled: True
+        AlarmActions:
+        - "arn:aws:sns:us-east-1:574368645764:RDS-Server-Alerts"
+        AlarmDescription: Alarm for low free RAM
+        AlarmName: !Join
+          - ''
+          - - "RDS-FreeRAM-"
+            - !Ref InstanceNameParameter
+        ComparisonOperator:  LessThanOrEqualToThreshold
+        DatapointsToAlarm: 3
+        Dimensions:
+        - Name: "DBInstanceIdentifier"
+          Value: !Ref InstanceNameParameter
+        EvaluationPeriods: 3
+        MetricName: FreeableMemory
+        Namespace: AWS/RDS
+        Period: 300
+        Statistic: Average
+        Threshold: 500000000
+        TreatMissingData: missing
+        Unit:  Bytes
